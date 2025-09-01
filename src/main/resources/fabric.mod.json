@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "perplexedutils",
+  "version": "${version}",
+  "name": "Perplexed Utils",
+  "description": "Adds some utility features",
+  "authors": ["PerpetuallyPerplexed"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/perplexedutils/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "me.perplexed.perplexedutils.client.PerplexedUtilsClient"
+    ],
+    "main": [
+      "me.perplexed.perplexedutils.PerplexedUtilsMain"
+    ],
+    "modmenu": [
+      "me.perplexed.perplexedutils.ModMenuImpl"
+    ]
+  },
+  "mixins": [
+    "perplexedutils.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-language-kotlin": ">=${kotlin_loader_version}",
+    "yet_another_config_lib_v3": ">=${yacl_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
