@@ -41,33 +41,33 @@ class ItemHUD(var pinned: Item = Items.AIR) : HUD("item",false, doubleArrayOf(0.
         val look: Item = if (pinned != Items.AIR) {
             pinned
         } else {
-            if (!inv.selectedItem.isEmpty) inv.selectedItem.item
+            if (!inv.getSelected().isEmpty) inv.getSelected().item
             else if (!inv.getItem(Inventory.SLOT_OFFHAND).isEmpty) inv.getItem(Inventory.SLOT_OFFHAND).item
             else return
         }
 
-        for (item in inv.nonEquipmentItems) {
+        for (item in inv.items) {
             if (item.item == look) counter += item.count
         }
         if (inv.getItem(Inventory.SLOT_OFFHAND).item == look) counter+=inv.getItem(Inventory.SLOT_OFFHAND).count
 
         val rendyPos = intArrayOf((pos[0]*ctxt.guiWidth()).toInt(), ((pos[1]*ctxt.guiHeight()).toInt()))
-        ctxt.pose().pushMatrix()
-        ctxt.pose().scale(scale,scale)
+        ctxt.pose().pushPose()
+        ctxt.pose().scale(scale,scale, 1f)
 
         val qkScale: (Int) -> Int = { (1.0/scale * it).toInt() }
 
         ctxt.renderFakeItem(ItemStack(look), qkScale(rendyPos[0]), qkScale(rendyPos[1]))
-        ctxt.pose().popMatrix()
+        ctxt.pose().popPose()
 
-        ctxt.pose().pushMatrix()
+        ctxt.pose().pushPose()
         val font = Minecraft.getInstance().font
-        ctxt.pose().scale(scale,scale)
-        ctxt.pose().translate((17 - font.width("$counter")).toFloat(), 9.0f)
+        ctxt.pose().scale(scale,scale, 1f)
+        ctxt.pose().translate((17 - font.width("$counter")).toDouble(), 9.0, 200.0)
         ctxt.drawString(font, "$counter",
             qkScale(rendyPos[0]),
             qkScale(rendyPos[1]), -1, true)
-        ctxt.pose().popMatrix()
+        ctxt.pose().popPose()
 
     }
 
@@ -181,22 +181,22 @@ class ItemHudWidget(screen: Screen,val hud: ItemHUD)
         val xy = dim.withResolution(ctxt.guiWidth(), ctxt.guiHeight())
 
         val rendyPos = intArrayOf(xy.x(), xy.y())
-        ctxt.pose().pushMatrix()
-        ctxt.pose().scale(scale(),scale())
+        ctxt.pose().pushPose()
+        ctxt.pose().scale(scale(),scale(), 1f)
 
         val qkScale: (Int) -> Int = { (1.0/scale() * it).toInt() }
 
         ctxt.renderFakeItem(ItemStack(look), qkScale(rendyPos[0]), qkScale(rendyPos[1]))
-        ctxt.pose().popMatrix()
+        ctxt.pose().popPose()
 
-        ctxt.pose().pushMatrix()
+        ctxt.pose().pushPose()
         val font = Minecraft.getInstance().font
-        ctxt.pose().scale(scale(),scale())
-        ctxt.pose().translate((17 - font.width("$counter")).toFloat(), 9.0f)
+        ctxt.pose().scale(scale(),scale(),1f)
+        ctxt.pose().translate((17 - font.width("$counter")).toDouble(), 9.0, 200.0)
         ctxt.drawString(font, "$counter",
             qkScale(rendyPos[0]),
             qkScale(rendyPos[1]), -1, true)
-        ctxt.pose().popMatrix()
+        ctxt.pose().popPose()
     }
 
     override fun default() {

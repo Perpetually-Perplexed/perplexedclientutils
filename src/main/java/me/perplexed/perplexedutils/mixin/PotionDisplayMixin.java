@@ -55,18 +55,18 @@ public class PotionDisplayMixin {
                     default -> mobEffectInstance.getAmplifier() + "";
                 };
 
-                guiGraphics.pose().pushMatrix();
-                guiGraphics.pose().translate(12,2);
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(12,2,0);
                 guiGraphics.drawString(minecraft.font,repre,potX,potY,0xadffffff,true);
-                guiGraphics.pose().popMatrix();
+                guiGraphics.pose().popPose();
             }
 
             String timer = PotionDisplay.INSTANCE.getDisplayType().getTick2str().apply(mobEffectInstance.getDuration());
-            guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(12 - (float) minecraft.font.width(timer) /2,14);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(12 - (float) minecraft.font.width(timer) /2,14,0);
             int colr = mobEffectInstance.getDuration() < 200 ? 0xadff0000: 0xadffffff;
             guiGraphics.drawString(minecraft.font,timer,potX,potY, colr,true);
-            guiGraphics.pose().popMatrix();
+            guiGraphics.pose().popPose();
         }
 
 

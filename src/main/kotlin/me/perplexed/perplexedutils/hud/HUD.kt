@@ -9,12 +9,12 @@ import dev.isxander.yacl3.api.OptionGroup
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder
 import me.perplexed.perplexedutils.gson
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer
+import net.minecraft.client.DeltaTracker
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import kotlin.math.log10
 
 internal val huds = listOf(
     ArrowHUD(),
@@ -29,12 +29,11 @@ fun registerAndLoadHuds(save: JsonArray) {
     }
 
     for (hud in huds) {
-        HudElementRegistry.addFirst(
-            ResourceLocation.parse("perplexedutils:${hud.id}_hud"),hud
-        )
+        HudLayerRegistrationCallback.EVENT.register { drawer ->
+            drawer.attachLayerBefore(IdentifiedLayer.CHAT,ResourceLocation.parse("perplexedutils:${hud.id}_hud")){c,t -> hud.render(c,t)}
+        }
     }
 }
-
 
 fun saveHuds(): JsonElement {
     val hudRoot = JsonArray()
@@ -56,8 +55,10 @@ fun hudConfig(): ConfigCategory {
     return desired.build()
 }
 
-abstract class HUD(val id: String,var active: Boolean,val pos: DoubleArray,var scale: Float) : HudElement {
+abstract class HUD(val id: String,var active: Boolean,val pos: DoubleArray,var scale: Float)  {
     //todo durability
+
+    abstract fun render(graphics: GuiGraphics, tracker: DeltaTracker)
 
     open fun save():JsonObject {
         return gson.toJsonTree(this).asJsonObject

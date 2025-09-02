@@ -23,27 +23,29 @@ class ArrowHUD : HUD("arrow",false, doubleArrayOf(0.0,0.0),1f) {
         val arrow = Items.ARROW
         var counter = 0
 
-        for (item in inv.nonEquipmentItems) {
+        for (item in inv.items) {
             if (item.item == arrow) counter += item.count
         }
 
+        if (inv.offhand[0].item == arrow) counter += inv.offhand[0].count
+
         val rendyPos = intArrayOf((pos[0]*ctxt.guiWidth()).toInt(), ((pos[1]*ctxt.guiHeight()).toInt()))
-        ctxt.pose().pushMatrix()
-        ctxt.pose().scale(scale,scale)
+        ctxt.pose().pushPose()
+        ctxt.pose().scale(scale,scale,1f)
 
         val qkScale: (Int) -> Int = { (1.0/scale * it).toInt() }
 
         ctxt.renderFakeItem(ItemStack(Items.ARROW), qkScale(rendyPos[0]), qkScale(rendyPos[1]))
-        ctxt.pose().popMatrix()
+        ctxt.pose().popPose()
 
-        ctxt.pose().pushMatrix()
+        ctxt.pose().pushPose()
         val font = Minecraft.getInstance().font
-        ctxt.pose().scale(scale,scale)
-        ctxt.pose().translate((17 - font.width("$counter")).toFloat(), 9.0f)
+        ctxt.pose().scale(scale,scale,1f)
+        ctxt.pose().translate((17 - font.width("$counter")).toDouble(), 9.0, 200.0)
         ctxt.drawString(font, "$counter",
             qkScale(rendyPos[0]),
             qkScale(rendyPos[1]), -1, true)
-        ctxt.pose().popMatrix()
+        ctxt.pose().popPose()
     }
 
     override fun size(): IntArray {
@@ -88,22 +90,22 @@ class ArrowHudWidget(screen: Screen, val hud: ArrowHUD)
         val xy = dim.withResolution(ctxt.guiWidth(), ctxt.guiHeight())
 
         val rendyPos = intArrayOf(xy.x(), xy.y())
-        ctxt.pose().pushMatrix()
-        ctxt.pose().scale(scale(),scale())
+        ctxt.pose().pushPose()
+        ctxt.pose().scale(scale(),scale(),1f)
 
         val qkScale: (Int) -> Int = { (1.0/scale() * it).toInt() }
 
         ctxt.renderFakeItem(ItemStack(Items.ARROW), qkScale(rendyPos[0]), qkScale(rendyPos[1]))
-        ctxt.pose().popMatrix()
+        ctxt.pose().popPose()
 
-        ctxt.pose().pushMatrix()
+        ctxt.pose().pushPose()
         val font = Minecraft.getInstance().font
-        ctxt.pose().scale(scale(),scale())
-        ctxt.pose().translate((17 - font.width("$counter")).toFloat(), 9.0f)
+        ctxt.pose().scale(scale(),scale(), 1f)
+        ctxt.pose().translate((17 - font.width("$counter")).toDouble(), 9.0, 200.0)
         ctxt.drawString(font, "$counter",
             qkScale(rendyPos[0]),
             qkScale(rendyPos[1]), -1, true)
-        ctxt.pose().popMatrix()
+        ctxt.pose().popPose()
     }
 
 }

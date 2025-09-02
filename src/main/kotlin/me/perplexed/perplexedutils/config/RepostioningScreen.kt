@@ -203,10 +203,10 @@ class ScaleSliderElement(
     }
 
     private fun drawValueText(graphics: GuiGraphics) {
-        graphics.pose().pushMatrix()
+        graphics.pose().pushPose()
         if (super.isHovered()) {
             graphics.pose()
-                .translate(-((sliderBounds.width() + 6).toFloat() + thumbWidth.toFloat() / 2.0f), 0.0f)
+                .translate(-((sliderBounds.width() + 6).toFloat() + thumbWidth.toFloat() / 2.0f), 0.0f,0f)
         }
 
         val txtY = (dim.y() as Int).toFloat() + (dim.height() as Int).toFloat() / 2.0f - 4.5f
@@ -216,7 +216,7 @@ class ScaleSliderElement(
             this.dim.xLimit() - font.width(super.getMessage()) - 5,
             txtY.toInt(),
             -0x1, true)
-        graphics.pose().popMatrix()
+        graphics.pose().popPose()
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {

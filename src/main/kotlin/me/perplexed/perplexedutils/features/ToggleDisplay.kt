@@ -15,8 +15,8 @@ import me.perplexed.perplexedutils.config.FeatureWidget
 import me.perplexed.perplexedutils.config.GuiTypes
 import me.perplexed.perplexedutils.config.RepositionScreen
 import me.perplexed.perplexedutils.config.UVDim
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -43,8 +43,12 @@ fun loadToggleDisplay(data: JsonObject) {
     sneakDisplay.data = gson.fromJson(data["sneak"]?.toString(),TextData::class.java) ?: sneakDisplay.data
     sprintDisplay.data = gson.fromJson(data["sprint"]?.toString(),TextData::class.java) ?: sprintDisplay.data
 
-    HudElementRegistry.addFirst(ResourceLocation.parse("perplexedutils:sprint_display"), sprintDisplay)
-    HudElementRegistry.addFirst(ResourceLocation.parse("perplexedutils:sneak_display"), sneakDisplay)
+    HudLayerRegistrationCallback.EVENT.register { drawer ->
+        drawer.attachLayerAfter(IdentifiedLayer.CHAT,ResourceLocation.parse("perplexedutils:sprint_display")){ c, t -> sprintDisplay.render(c,t)}
+    }
+    HudLayerRegistrationCallback.EVENT.register { drawer ->
+        drawer.attachLayerAfter(IdentifiedLayer.CHAT,ResourceLocation.parse("perplexedutils:sneak_display")){c,t -> sneakDisplay.render(c,t)}
+    }
 }
 
 fun toggleDisplayConfig(): ConfigCategory {
@@ -173,8 +177,8 @@ data class TextData(var text: String,var active: Boolean, var color: Int, var po
     }
 }
 
-class ToggleDisplayElement(var data: TextData) : HudElement {
-    override fun render(graphics: GuiGraphics, p1: DeltaTracker) {
+class ToggleDisplayElement(var data: TextData) {
+    fun render(graphics: GuiGraphics, p1: DeltaTracker) {
         if (Minecraft.getInstance().debugOverlay.showDebugScreen() || !toggleDisplay
             || !data.active) return
 
@@ -192,12 +196,12 @@ class ToggleDisplayElement(var data: TextData) : HudElement {
         val font = Minecraft.getInstance().font
         val xy = data.pos(graphics)
 
-        graphics.pose().pushMatrix()
+        graphics.pose().pushPose()
 
-        graphics.pose().scale(data.scale,data.scale)
+        graphics.pose().scale(data.scale,data.scale,1f)
         graphics.drawString(font, data.text, xy[0], xy[1], data.color,data.shadow)
 
-        graphics.pose().popMatrix()
+        graphics.pose().popPose()
     }
 
 }
@@ -230,12 +234,12 @@ class ToggleDisplayWidget(screen: Screen, private val textData: TextData)
         val font = Minecraft.getInstance().font
         val xy = dim.withResolution(graphics.guiWidth(), graphics.guiHeight())
 
-        graphics.pose().pushMatrix()
-        graphics.pose().scale(this.scale(),this.scale())
+        graphics.pose().pushPose()
+        graphics.pose().scale(this.scale(),this.scale(),1f)
 
         graphics.drawString(font, textData.text, (xy.x()/this.scale()).toInt(), (xy.y()/this.scale()).toInt(), textData.color,textData.shadow)
 
-        graphics.pose().popMatrix()
+        graphics.pose().popPose()
     }
 
 }

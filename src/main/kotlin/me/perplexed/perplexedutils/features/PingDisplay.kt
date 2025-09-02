@@ -11,8 +11,8 @@ import me.perplexed.perplexedutils.config.GuiTypes
 import me.perplexed.perplexedutils.config.RepositionScreen
 import me.perplexed.perplexedutils.config.UVDim
 import me.perplexed.perplexedutils.gson
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer
 import net.minecraft.Util
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
@@ -38,7 +38,9 @@ fun tickPing() {
 
 fun loadPingDisplay(data: JsonObject) {
     pingDisplay.data = gson.fromJson(data["ping-display"]?.toString(),PingGyaan::class.java) ?: pingDisplay.data
-    HudElementRegistry.addFirst(ResourceLocation.parse("perplexedutils:pingdisplay"), pingDisplay)
+    HudLayerRegistrationCallback.EVENT.register { drawer ->
+        drawer.attachLayerAfter(IdentifiedLayer.CHAT,ResourceLocation.parse("perplexedutils:ping_display")){ c, t -> pingDisplay.render(c,t)}
+    }
 }
 
 fun pingDisplayConfig(): OptionGroup {
@@ -75,23 +77,23 @@ fun pingDisplayConfig(): OptionGroup {
     return ping.build()
 }
 
-class PingElement(var data: PingGyaan) : HudElement {
+class PingElement(var data: PingGyaan) {
     private var text = "0 ms"
     private var color = 0xffffffff.toInt()
 
-    override fun render(graphics: GuiGraphics, p1: DeltaTracker?) {
+    fun render(graphics: GuiGraphics, p1: DeltaTracker?) {
         if (!data.active) return
 
         updatePing()
         val font = Minecraft.getInstance().font
         val xy = data.pos(graphics)
 
-        graphics.pose().pushMatrix()
+        graphics.pose().pushPose()
 
-        graphics.pose().scale(data.scale,data.scale)
+        graphics.pose().scale(data.scale,data.scale,1f)
         graphics.drawString(font, text, xy[0], xy[1], color ,data.shadow)
 
-        graphics.pose().popMatrix()
+        graphics.pose().popPose()
     }
 
     private fun updatePing() {
@@ -135,12 +137,12 @@ class PingDisplayWidget(screen: Screen, private val ping: PingGyaan)
         val font = Minecraft.getInstance().font
         val xy = dim.withResolution(graphics.guiWidth(), graphics.guiHeight())
 
-        graphics.pose().pushMatrix()
-        graphics.pose().scale(this.scale(),this.scale())
+        graphics.pose().pushPose()
+        graphics.pose().scale(this.scale(),this.scale(),1f)
 
         graphics.drawString(font, "69 ms", (xy.x()/this.scale()).toInt(), (xy.y()/this.scale()).toInt(), 0xff11d14b.toInt(),ping.shadow)
 
-        graphics.pose().popMatrix()
+        graphics.pose().popPose()
     }
 
 }
