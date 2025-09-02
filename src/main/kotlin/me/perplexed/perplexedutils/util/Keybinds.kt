@@ -21,11 +21,7 @@ fun registerKeybind(map: AdvancedKeyMapping): KeyMapping {
 }
 
 fun loadKeyBinds() {
-    registerKeybind(AdvancedKeyMapping(KeyMapping("Toggle Display", ksym, InputConstants.KEY_O, category), consume = {
-        toggleDisplay = !toggleDisplay
-        val msg =  if (toggleDisplay) green("Toggle Display is enabled") else red("Toggle Display is disabled")
-        it.gui.setOverlayMessage(msg,false)
-    }))
+    registerKeybind(AdvancedKeyMapping(KeyMapping("Brightness", ksym, InputConstants.KEY_B, category), consume = { FullBright.toggle()}))
 
     PeekChat.peekChatKey = registerKeybind(AdvancedKeyMapping(KeyMapping("Peek Chat", ksym, InputConstants.KEY_Z, category), release = {
         it.gui.chat.resetChatScroll()
