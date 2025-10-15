@@ -1,9 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
 plugins {
     kotlin("jvm") version "2.0.20"
-    id("fabric-loom") version "1.10.2"
+    id("fabric-loom") version "1.11.7"
     id("maven-publish")
 }
 
@@ -43,7 +44,7 @@ dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${project.property("parchment_version")}@zip")
+        //parchment("org.parchmentmc.data:parchment-${project.property("parchment_version")}@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
