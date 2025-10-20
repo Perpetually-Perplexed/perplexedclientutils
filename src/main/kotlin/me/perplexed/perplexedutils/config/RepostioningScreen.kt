@@ -1,5 +1,6 @@
 package me.perplexed.perplexedutils.config
 
+import com.mojang.blaze3d.platform.InputConstants
 import dev.isxander.yacl3.api.utils.Dimension
 import dev.isxander.yacl3.api.utils.MutableDimension
 import dev.isxander.yacl3.gui.utils.GuiUtils
@@ -15,10 +16,13 @@ import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.narration.NarratedElementType
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.input.KeyEvent
+import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.network.chat.Component
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.util.Mth
+import org.lwjgl.glfw.GLFW
 import java.util.function.Consumer
 import java.util.function.Function
 
@@ -219,19 +223,19 @@ class ScaleSliderElement(
         graphics.pose().popMatrix()
     }
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (button == 0 && sliderBounds.isPointInside(mouseX.toInt(), mouseY.toInt())) {
+    override fun mouseClicked(event: MouseButtonEvent, bl:Boolean): Boolean {
+        if (event.button() == 0 && sliderBounds.isPointInside(event.x.toInt(), event.y.toInt())) {
             this.mouseDown = true
-            this.setValueFromMouse(mouseX)
+            this.setValueFromMouse(event.x)
             return true
         } else {
             return false
         }
     }
 
-    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        if (button == 0 && this.mouseDown) {
-            this.setValueFromMouse(mouseX)
+    override fun mouseDragged(event: MouseButtonEvent , deltaX: Double, deltaY: Double): Boolean {
+        if (event.button() == 0 && this.mouseDown) {
+            this.setValueFromMouse(event.x)
             return true
         } else {
             return false
@@ -243,11 +247,13 @@ class ScaleSliderElement(
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontal: Double, vertical: Double): Boolean {
-        if (this.isMouseOver(
-                mouseX,
-                mouseY
-            ) && (Screen.hasShiftDown() || Screen.hasControlDown())
-        ) {
+        val window = Minecraft.getInstance().window
+        val shift = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT)
+        val ctrl = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL)
+
+        if (this.isMouseOver(mouseX, mouseY) && (shift || ctrl)) {
             this.incrementValue(vertical)
             return true
         } else {
@@ -255,19 +261,19 @@ class ScaleSliderElement(
         }
     }
 
-    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseReleased(mouseButtonEvent: MouseButtonEvent): Boolean {
         if (this.mouseDown) {
             client.soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f))
         }
 
         this.mouseDown = false
-        return super.mouseReleased(mouseX, mouseY, button)
+        return super.mouseReleased(mouseButtonEvent)
     }
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+    override fun keyPressed(keyEvent: KeyEvent): Boolean {
         if (!this.focused) return true
 
-        when (keyCode) {
+        when (keyEvent.scancode) {
             262 -> this.incrementValue(1.0)
             263 -> this.incrementValue(-1.0)
             else -> return false
@@ -326,7 +332,7 @@ abstract class FeatureWidget(val screen: Screen, val ogDim: UVDim, private var s
 
 
         renderWidgy(guiGraphics)
-        guiGraphics.renderOutline(resolved.x()-1,resolved.y()-1,resolved.width()+1,resolved.height()+1,
+        guiGraphics.submitOutline(resolved.x()-1,resolved.y()-1,resolved.width()+1,resolved.height()+1,
             0xff6be2f2.toInt())
     }
 
@@ -337,9 +343,9 @@ abstract class FeatureWidget(val screen: Screen, val ogDim: UVDim, private var s
             .withHeight(scale.toDouble()*ogDim.height()).withX(dim.x()).withY(dim.y()) as UVDim
     }
 
-    override fun onDrag(mouseX: Double, mouseY: Double, dragX: Double, dragY: Double) {
+    override fun onDrag(event: MouseButtonEvent, dragX: Double,  dragY: Double) {
         (screen as RepositionScreen).markEdits()
-        dim = dim.withX(mouseX / screen.width).withY(mouseY/screen.height) as UVDim
+        dim = dim.withX(event.x / screen.width).withY(event.y/screen.height) as UVDim
     }
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
