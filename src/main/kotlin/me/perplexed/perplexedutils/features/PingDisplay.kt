@@ -13,14 +13,14 @@ import me.perplexed.perplexedutils.config.UVDim
 import me.perplexed.perplexedutils.gson
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
-import net.minecraft.Util
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
+import net.minecraft.util.Util
 
 
 var ping: Long = 0
@@ -38,7 +38,7 @@ fun tickPing() {
 
 fun loadPingDisplay(data: JsonObject) {
     pingDisplay.data = gson.fromJson(data["ping-display"]?.toString(),PingGyaan::class.java) ?: pingDisplay.data
-    HudElementRegistry.addFirst(ResourceLocation.parse("perplexedutils:pingdisplay"), pingDisplay)
+    HudElementRegistry.addFirst(Identifier.parse("perplexedutils:pingdisplay"), pingDisplay)
 }
 
 fun pingDisplayConfig(): OptionGroup {
@@ -79,7 +79,7 @@ class PingElement(var data: PingGyaan) : HudElement {
     private var text = "0 ms"
     private var color = 0xffffffff.toInt()
 
-    override fun render(graphics: GuiGraphics, p1: DeltaTracker?) {
+    override fun render(graphics: GuiGraphics, p1: DeltaTracker) {
         if (!data.active) return
 
         updatePing()

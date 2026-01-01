@@ -1,9 +1,9 @@
 package me.perplexed.perplexedutils.mixin;
 
 import me.perplexed.perplexedutils.features.PingDisplayKt;
-import net.minecraft.Util;
 import net.minecraft.client.multiplayer.PingDebugMonitor;
 import net.minecraft.network.protocol.ping.ClientboundPongResponsePacket;
+import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

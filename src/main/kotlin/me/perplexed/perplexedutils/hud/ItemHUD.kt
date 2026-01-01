@@ -24,7 +24,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -63,7 +63,7 @@ class ItemHUD(var pinned: Item = Items.AIR) : HUD("item",false, doubleArrayOf(0.
         ctxt.pose().pushMatrix()
         val font = Minecraft.getInstance().font
         ctxt.pose().scale(scale,scale)
-        ctxt.pose().translate((17 - font.width("$counter")).toFloat(), 9.0f)
+        ctxt.pose().translate((textDelta - font.width("$counter")).toFloat(), 9.0f)
         ctxt.drawString(font, "$counter",
             qkScale(rendyPos[0]),
             qkScale(rendyPos[1]), -1, true)
@@ -82,7 +82,7 @@ class ItemHUD(var pinned: Item = Items.AIR) : HUD("item",false, doubleArrayOf(0.
             ButtonOption.createBuilder()
                 .name(Component.literal("Edit ItemHUD Position"))
                 .text(Component.empty())
-                .action{bacl, _ -> Minecraft.getInstance().setScreen(RepositionScreen(GuiTypes.ITEM))}
+                .action{_, _ -> Minecraft.getInstance().setScreen(RepositionScreen(GuiTypes.ITEM))}
                 .build())
     }
 
@@ -91,7 +91,7 @@ class ItemHUD(var pinned: Item = Items.AIR) : HUD("item",false, doubleArrayOf(0.
     }
 
     companion object {
-        private const val delta = 7
+        private const val textDelta = 7
     }
 
     override fun save(): JsonObject {
@@ -109,7 +109,7 @@ class ItemHUD(var pinned: Item = Items.AIR) : HUD("item",false, doubleArrayOf(0.
         this.pos[0] = root["pos"].asJsonArray[0].asDouble
         this.pos[1] = root["pos"].asJsonArray[1].asDouble
         this.scale = root["scale"].asFloat
-        this.pinned = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(root["pinned"].asString))
+        this.pinned = BuiltInRegistries.ITEM.getValue(Identifier.parse(root["pinned"].asString))
     }
 }
 

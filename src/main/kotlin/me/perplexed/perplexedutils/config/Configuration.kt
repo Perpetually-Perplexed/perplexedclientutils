@@ -2,9 +2,7 @@ package me.perplexed.perplexedutils.config
 
 import com.google.gson.JsonObject
 import dev.isxander.yacl3.api.ConfigCategory
-import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.api.YetAnotherConfigLib
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder
 import me.perplexed.perplexedutils.features.*
 import me.perplexed.perplexedutils.gson
 import me.perplexed.perplexedutils.hud.hudConfig

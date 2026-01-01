@@ -22,7 +22,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import java.awt.Color
 
 var toggleDisplay = true
@@ -43,8 +43,8 @@ fun loadToggleDisplay(data: JsonObject) {
     sneakDisplay.data = gson.fromJson(data["sneak"]?.toString(),TextData::class.java) ?: sneakDisplay.data
     sprintDisplay.data = gson.fromJson(data["sprint"]?.toString(),TextData::class.java) ?: sprintDisplay.data
 
-    HudElementRegistry.addFirst(ResourceLocation.parse("perplexedutils:sprint_display"), sprintDisplay)
-    HudElementRegistry.addFirst(ResourceLocation.parse("perplexedutils:sneak_display"), sneakDisplay)
+    HudElementRegistry.addFirst(Identifier.parse("perplexedutils:sprint_display"), sprintDisplay)
+    HudElementRegistry.addFirst(Identifier.parse("perplexedutils:sneak_display"), sneakDisplay)
 }
 
 fun toggleDisplayConfig(): ConfigCategory {
@@ -94,7 +94,7 @@ fun toggleDisplayConfig(): ConfigCategory {
         ButtonOption.createBuilder()
         .name(Component.literal("Edit SprintDisplay Position"))
         .text(Component.empty())
-        .action{bacl, _ -> Minecraft.getInstance().setScreen(RepositionScreen(GuiTypes.SPRINT))}
+        .action{ _, _ -> Minecraft.getInstance().setScreen(RepositionScreen(GuiTypes.SPRINT))}
         .build())
     
     desired.group(sprint.build())
@@ -134,7 +134,7 @@ fun toggleDisplayConfig(): ConfigCategory {
         ButtonOption.createBuilder()
             .name(Component.literal("Edit SneakDisplay Position"))
             .text(Component.empty())
-            .action{bacl, _ -> Minecraft.getInstance().setScreen(RepositionScreen(GuiTypes.SNEAK))}
+            .action{_, _ -> Minecraft.getInstance().setScreen(RepositionScreen(GuiTypes.SNEAK))}
             .build())
 
     return desired.group(sneak.build()).build()

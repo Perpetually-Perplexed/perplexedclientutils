@@ -56,7 +56,7 @@ class ArrowHUD : HUD("arrow",false, doubleArrayOf(0.0,0.0),1f) {
             ButtonOption.createBuilder()
                 .name(Component.literal("Edit ArrowHUD Position"))
                 .text(Component.empty())
-                .action{bacl, _ -> Minecraft.getInstance().setScreen(RepositionScreen(GuiTypes.ARROW))}
+                .action{_, _ -> Minecraft.getInstance().setScreen(RepositionScreen(GuiTypes.ARROW))}
                 .build())
     }
 }

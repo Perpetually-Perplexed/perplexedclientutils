@@ -11,10 +11,8 @@ import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder
 import me.perplexed.perplexedutils.gson
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
-import kotlin.math.log10
+import net.minecraft.resources.Identifier
 
 internal val huds = listOf(
     ArrowHUD(),
@@ -30,7 +28,7 @@ fun registerAndLoadHuds(save: JsonArray) {
 
     for (hud in huds) {
         HudElementRegistry.addFirst(
-            ResourceLocation.parse("perplexedutils:${hud.id}_hud"),hud
+            Identifier.parse("perplexedutils:${hud.id}_hud"),hud
         )
     }
 }

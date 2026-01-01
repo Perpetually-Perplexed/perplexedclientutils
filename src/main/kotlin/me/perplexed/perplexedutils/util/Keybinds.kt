@@ -7,11 +7,11 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import java.util.function.Consumer
 
 val keybinds: MutableList<AdvancedKeyMapping> = mutableListOf()
-private val category = KeyMapping.Category.register(ResourceLocation.parse("perplexedutils:keybind"))
+private val category = KeyMapping.Category.register(Identifier.parse("perplexedutils:keybind"))
 private val ksym = InputConstants.Type.KEYSYM
 
 fun registerKeybind(map: AdvancedKeyMapping): KeyMapping {

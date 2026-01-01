@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
-    kotlin("jvm") version "2.0.20"
-    id("fabric-loom") version "1.11.7"
+    kotlin("jvm") version "2.2.0"
+    id("fabric-loom") version "1.14-SNAPSHOT"
     id("maven-publish")
 }
 
@@ -42,18 +42,20 @@ repositories {
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
+    //mappings(loom.officialMojangMappings())
     mappings(loom.layered {
         officialMojangMappings()
-        //parchment("org.parchmentmc.data:parchment-${project.property("parchment_version")}@zip")
+        parchment("org.parchmentmc.data:parchment-1.21.10:2025.10.12@zip")
     })
+
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
     modImplementation("dev.isxander:yet-another-config-lib:${project.property("yacl_version")}")
     modImplementation("com.terraformersmc:modmenu:${project.property("modmenu_version")}")
-    modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.1")
+    modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.2")
 
     // Fabric API. This is technically optional, but you probably want it anway.
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
 }
 
 tasks.processResources {
@@ -65,10 +67,10 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(
             "version" to project.version,
-            "minecraft_version" to project.property("minecraft_version"),
-            "loader_version" to project.property("loader_version"),
-            "kotlin_loader_version" to project.property("kotlin_loader_version"),
-            "yacl_version" to project.property("yacl_version")
+            "minecraft_version" to project.property("minecraft_version") as String,
+            "loader_version" to project.property("loader_version") as String,
+            "kotlin_loader_version" to project.property("kotlin_loader_version") as String,
+            "yacl_version" to project.project.property("yacl_version") as String
         )
     }
 }

@@ -332,7 +332,7 @@ abstract class FeatureWidget(val screen: Screen, val ogDim: UVDim, private var s
 
 
         renderWidgy(guiGraphics)
-        guiGraphics.submitOutline(resolved.x()-1,resolved.y()-1,resolved.width()+1,resolved.height()+1,
+        guiGraphics.renderOutline(resolved.x()-1,resolved.y()-1,resolved.width()+1,resolved.height()+1,
             0xff6be2f2.toInt())
     }
 
